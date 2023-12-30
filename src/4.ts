@@ -1,11 +1,50 @@
-// const key = new Key();
+class Key {
+  private signature: number = Math.random();
+  getSignature(): number {
+    return this.signature;
+  }
+}
 
-// const house = new MyHouse(key);
-// const person = new Person(key);
+class Person {
+  constructor(private key: Key) {}
+  getKey(): Key {
+    return this.key;
+  }
+}
 
-// house.openDoor(person.getKey());
+abstract class House {
+  protected door: boolean = false;
+  public tenants: Person[] = [];
+  constructor(protected key: Key) {}
+  comeIn(person: Person): void {
+    if (this.door) {
+      this.tenants.push(person);
+      console.log("Come in!");
+    } else {
+      console.log("You can not come in.");
+    }
+  }
+  abstract openDoor(key: Key): void;
+}
 
-// house.comeIn(person);
+class MyHouse extends House {
+  openDoor(key: Key): void {
+    if (key.getSignature() === this.key.getSignature()) {
+      this.door = true;
+      console.log("Door is open. Come in.");
+    } else {
+      console.log("Door is close, try to find the rigth key");
+    }
+  }
+}
 
+const key = new Key();
 
-// export {};
+const house = new MyHouse(key);
+const person = new Person(key);
+
+house.openDoor(person.getKey());
+
+house.comeIn(person);
+
+export {};
